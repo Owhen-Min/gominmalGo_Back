@@ -375,3 +375,7 @@ pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,python,visualstudiocode
 
+# RAG 폴더 추가
+rag/data/
+rag/model/
+rag/env/
