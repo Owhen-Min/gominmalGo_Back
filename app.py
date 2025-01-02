@@ -35,9 +35,9 @@ assistant = OpenAI().beta.assistants.create(
 # Allow CORS for local dev
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://gominmalgo.vercel.app"],
+    allow_origins=["https://gominmalgo.vercel.app", "http://localhost:3000"],
     allow_credentials=True,
-    allow_methods=["POST"],
+    allow_methods=["POST", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["*"],
     max_age=600,
