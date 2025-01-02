@@ -9,12 +9,12 @@ import re
 from datetime import datetime
 
 # ==================
-# 1. 감정대화 데이터 생성
+# 1. 감정증상 데이터 생성
 # ==================
 
 def create_database():
     """
-    감정대화 데이터 기반 SQLite 데이터베이스 생성 및 데이터 삽입
+    감정증상 데이터 기반 SQLite 데이터베이스 생성 및 데이터 삽입
     """
     db_path = './db/ssafy_ai.db'
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
@@ -33,7 +33,7 @@ def create_database():
     ''')
 
     # 데이터 삽입
-    json_file_path = './data/감성대화말뭉치(최종데이터)_Validation.json'
+    json_file_path = './data/감성대화말뭉치(최종데이터)_Training.json'
     with open(json_file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -45,10 +45,10 @@ def create_database():
 
     conn.commit()
     conn.close()
-    print("감정대화 데이터 기반 SQLite 데이터베이스 생성 완료!")
+    print("감정증상 데이터 기반 SQLite 데이터베이스 생성 완료!")
 
 # ==================
-# 2. 감정대화 Pinecone 모델 생성
+# 2. 감정증상 Pinecone 모델 생성
 # ==================
 
 def init_pinecone():
@@ -65,19 +65,19 @@ def init_pinecone():
 
 def create_emotion_model():
     """
-    감정대화 데이터 기반 Pinecone 모델 생성
+    감정증상 데이터 기반 Pinecone 모델 생성
     """
     pc = init_pinecone()
 
     # Pinecone 인덱스 이름 생성
-    index_name = "emotion-corpus"
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+    index_name = "emotion-corpus-jhgan"
+    model = SentenceTransformer('jhgan/ko-sroberta-multitask')
 
     # 인덱스 존재 여부 확인 및 생성
     if not pc.has_index(index_name):
         pc.create_index(
             name=index_name,
-            dimension=384,
+            dimension=768,
             metric="cosine",
             spec=ServerlessSpec(cloud="aws", region="us-east-1")
         )
@@ -94,17 +94,9 @@ def create_emotion_model():
         embedding = model.encode(item["talk"]["content"]["HS01"]).tolist()
         index.upsert([("id_" + str(hash(item["talk"]["content"]["HS01"])), embedding, {"text": item["talk"]["content"]["HS01"]})])
 
-    model.save(f'./model/{index_name}')
-    print(f"감정대화 Pinecone 모델 생성 완료: {index_name}")
+    print(f"감정증상 Pinecone 모델 생성 완료: {index_name}")
 
 
-import sqlite3
-import os
-import pandas as pd
-from tqdm import tqdm
-from sentence_transformers import SentenceTransformer
-from pinecone import Pinecone, ServerlessSpec
-from datetime import datetime
 
 # ==================
 # 3. 웰니스 데이터 생성
@@ -130,7 +122,7 @@ def create_wellness_database():
     ''')
 
     # 데이터 삽입
-    csv_file_path = './data/Wellness_preprocessed.csv'
+    csv_file_path = './data/Wellness_final.csv'
     if not os.path.exists(csv_file_path):
         raise FileNotFoundError(f"Wellness 데이터 파일을 찾을 수 없습니다: {csv_file_path}")
 
@@ -140,7 +132,7 @@ def create_wellness_database():
         cursor.execute('''
         INSERT INTO wellness (category, dialogue)
         VALUES (?, ?)
-        ''', (row['구분'], row['대화']))
+        ''', (row['구분'], row['증상']))
 
     conn.commit()
     conn.close()
@@ -161,13 +153,13 @@ def create_wellness_model():
 
     # Pinecone 인덱스 이름 생성
     index_name = "wellness-corpus"
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+    model = SentenceTransformer('jhgan/ko-sroberta-multitask')
 
     # 인덱스 존재 여부 확인 및 생성
     if not pc.has_index(index_name):
         pc.create_index(
             name=index_name,
-            dimension=384,
+            dimension=768,
             metric="cosine",
             spec=ServerlessSpec(cloud="aws", region="us-east-1")
         )
@@ -176,15 +168,15 @@ def create_wellness_model():
     index = pc.Index(index_name)
 
     # 데이터 업로드
-    csv_file_path = './data/Wellness_preprocessed.csv'
+    csv_file_path = './data/Wellness_final.csv'
     if not os.path.exists(csv_file_path):
         raise FileNotFoundError(f"Wellness 데이터 파일을 찾을 수 없습니다: {csv_file_path}")
 
     data = pd.read_csv(csv_file_path)
 
     for _, row in tqdm(data.iterrows(), total=len(data), desc="Uploading Wellness Data"):
-        embedding = model.encode(row['대화']).tolist()
-        metadata = {"category": row['구분'], "text": row['대화']}
+        embedding = model.encode(row['증상']).tolist()
+        metadata = {"category": row['구분'], "text": row['증상']}
         index.upsert([(f"id_{_}", embedding, metadata)])
 
     print("Wellness Pinecone 모델 생성 완료!")
