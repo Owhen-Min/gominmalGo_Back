@@ -17,7 +17,7 @@ def init_pinecone():
     """
     Pinecone 초기화
     """
-    with open('./env/pinecone_key', 'r') as file:
+    with open('os.getenv("pinecone_key")', 'r') as file:
         api_key = file.read().strip()
 
     pc = Pinecone(api_key=api_key)
