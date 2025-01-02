@@ -89,10 +89,10 @@ async def assistant_endpoint(req: MessageRequest):
                 wellness_categories.append('/'.join(category.split('/')[:2]))
     
     # RAG 결과를 포함한 컨텍스트 생성
-    rag_context = {
+    rag_context = str({
         "emotion_analysis": emotion_results,
         "wellness_categories": dict(Counter(wellness_categories))
-    }
+    })
     
     # Assistant에 RAG 결과와 함께 요청 전송
     thread = await openai.beta.threads.create(
