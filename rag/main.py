@@ -11,16 +11,16 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # TensorFlow logs
 os.environ['TOKENIZERS_PARALLELISM'] = 'false'  # Tokenizers parallelism warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="torchvision")
 warnings.filterwarnings("ignore", category=UserWarning, module="torch._utils")
+openai_key=os.getenv("OPENAI_API_KEY")
 
 
 def init_pinecone():
     """
     Pinecone 초기화
     """
-    with open('os.getenv("pinecone_key")', 'r') as file:
-        api_key = file.read().strip()
+    pinecone_key = 'os.getenv("PINECONE_API_KEY")'
 
-    pc = Pinecone(api_key=api_key)
+    pc = Pinecone(api_key=pinecone_key)
     return pc
 
 def search_emotion(query):
@@ -79,9 +79,7 @@ def split_into_sentences(input_text):
     """
     사용자 입력을 문장별로 나누는 함수.
     """
-    with open('./env/open_key', 'r') as file:
-        api_key = file.read().strip()
-    client = OpenAI(api_key=api_key)
+    client = OpenAI(api_key=openai_key)
     prompt = """
     구어체로 이루어진 문단의 경우 일일이 코딩을 하여 문장으로 나누기 어렵다.
     다음 구어체 형태의 텍스트의 내용을 파악하여 충분한 크기의 1개 이상의 문어체 문장들로 재구성할 것.
@@ -109,9 +107,7 @@ def summarize_input(input_text):
     """
     사용자 입력을 요약하여 5개의 문장으로 만드는 함수.
     """
-    with open('./env/open_key', 'r') as file:
-        api_key = file.read().strip()
-    client = OpenAI(api_key=api_key)
+    client = OpenAI(api_key=openai_key)
     prompt = """
     다음 대화 내용을 하나의 증상을 나타내는 문어체 문장으로 변환하고, 
     같은 증상의 경우 같은 문장으로 통일해 주세요. 
