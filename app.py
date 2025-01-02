@@ -37,8 +37,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://gominmalgo.vercel.app"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["POST"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=600,
 )
 
 
