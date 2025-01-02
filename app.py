@@ -48,7 +48,7 @@ class MessageRequest(BaseModel):
     message: str
 
 
-@app.post("/assistant")
+@app.post("/assistant/")
 async def assistant_endpoint(req: MessageRequest):
     thread = await openai.beta.threads.create(
         messages=[{"role": "user", "content": req.message}]
@@ -71,4 +71,5 @@ async def assistant_endpoint(req: MessageRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8080))
+    uvicorn.run(app, host="0.0.0.0", port=port)
