@@ -104,7 +104,12 @@ def split_into_sentences(input_text):
     """
     client = OpenAI(api_key=openai_key)
     prompt = """
-    구어체로 이루어진 문단의 경우 문장으로 나누어 파이썬 리스트 형식으로 반환하세요.
+    구어체로 이루어진 문단의 경우 일일이 코딩을 하여 문장으로 나누기 어렵다.
+    다음 구어체 형태의 텍스트의 내용을 파악하여 충분한 크기의 1개 이상의 문어체 문장들로 재구성할 것.
+    원본 텍스트의 내용을 변형하지 않아야 한다.
+    출력형태는 파이썬 문법의 리스트형식으로 출력한다.
+    출력형태는 다음과 같다.
+    ['나의 고민은 과식을 하는 것이다.','기분이 풀릴 때까지 먹는다.']
     """
     chat_completion = client.chat.completions.create(
         messages=[
@@ -128,7 +133,16 @@ def summarize_input(input_text):
     """
     client = OpenAI(api_key=openai_key)
     prompt = """
-    대화 내용을 간단히 요약하여 증상 문장 리스트로 반환하세요.
+    다음 대화 내용을 하나의 증상을 나타내는 문어체 문장으로 변환하고, 
+    같은 증상의 경우 같은 문장으로 통일해 주세요. 
+    의사가 환자의 증상을 적듯이, 간단하고 명료하게 작성할 것.
+    증상의 경우 파이썬 문법의 리스트 형식으로 제공된다.
+    파이썬 문법의 리스트 형식으로 변환된 문장을 리스트에 담아 출력할 것.
+    출력형태는 다음과 같다.
+
+    
+    ['감정조절이 어렵다.','의심이 많아졌다.']
+    
     """
     chat_completion = client.chat.completions.create(
         messages=[
