@@ -10,7 +10,7 @@ primary_region = 'nrt'
   builder = 'paketobuildpacks/builder:base'
 
 [env]
-  PORT = '8080'
+  PORT = '8000'
 
 [http_service]
   internal_port = 8000
