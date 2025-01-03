@@ -19,10 +19,11 @@ def connect_mysql():
     MySQL 데이터베이스 연결
     """
     return mysql.connector.connect(
-        host="localhost",        # MySQL 서버 주소
-        user="your_username",    # 사용자 이름
-        password="your_password", # 비밀번호
-        database="ssafy_ai"      # 데이터베이스 이름
+       host="ssafy.cpe0a008coe5.ap-northeast-2.rds.amazonaws.com",        # MySQL 서버 주소
+        port=3306,
+        user="admin",    # MySQL 사용자 이름
+        password="12345678", # MySQL 비밀번호
+        database="ssafy"      # 사용할 데이터베이스 이름)
     )
 
 

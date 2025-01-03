@@ -1,4 +1,4 @@
-import sqlite3
+import mysql.connector
 from sentence_transformers import SentenceTransformer
 from pinecone import Pinecone
 import os
@@ -36,22 +36,28 @@ def search_wellness(query):
 
 def fetch_emotion_from_db(human_text):
     """
-    SQLite 데이터베이스에서 emotion_corpus 테이블을 조회하여
+    MySQL 데이터베이스에서 emotion_corpus 테이블을 조회하여
     human_text와 일치하는 행을 반환하는 함수.
 
     :param human_text: 검색할 텍스트
     :return: 일치하는 데이터베이스 행의 리스트
     """
-    db_path = './db/ssafy_ai.db'
-    conn = sqlite3.connect(db_path)
+
+    conn = mysql.connector.connect(
+        host="ssafy.cpe0a008coe5.ap-northeast-2.rds.amazonaws.com",        # MySQL 서버 주소
+        port=3306,
+        user="admin",    # MySQL 사용자 이름
+        password="12345678", # MySQL 비밀번호
+        database="ssafy"      # 사용할 데이터베이스 이름
+    )
     cursor = conn.cursor()
 
     # 데이터베이스 쿼리 실행
     cursor.execute('''
         SELECT * 
         FROM emotion_corpus
-        WHERE human_text = ?
-        limit 1
+        WHERE human_text = %s
+        LIMIT 1
     ''', (human_text,))
     rows = cursor.fetchall()
 
@@ -61,22 +67,28 @@ def fetch_emotion_from_db(human_text):
 
 def fetch_wellness_from_db(text):
     """
-    SQLite 데이터베이스에서 wellness 테이블을 조회하여
+    MySQL 데이터베이스에서 wellness 테이블을 조회하여
     dialogue와 일치하는 행을 반환하는 함수.
 
     :param dialogue: 검색할 텍스트
     :return: 일치하는 데이터베이스 행의 리스트
     """
-    db_path = './db/ssafy_ai.db'
-    conn = sqlite3.connect(db_path)
+
+    conn = mysql.connector.connect(        
+        host="ssafy.cpe0a008coe5.ap-northeast-2.rds.amazonaws.com",        # MySQL 서버 주소
+        port=3306,
+        user="admin",    # MySQL 사용자 이름
+        password="12345678", # MySQL 비밀번호
+        database="ssafy"      # 사용할 데이터베이스 이름)
+    )
     cursor = conn.cursor()
 
     # 데이터베이스 쿼리 실행
     cursor.execute('''
         SELECT * 
         FROM wellness
-        WHERE dialogue = ?
-        limit 1
+        WHERE dialogue = %s
+        LIMIT 1
     ''', (text,))
     rows = cursor.fetchall()
 
