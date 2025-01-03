@@ -24,14 +24,14 @@ while True:
     if choice == "1":
         print("\n[1] 감정대화 데이터 생성 시작...")
         create_database()  # SQLite 데이터 생성
-        init_pinecone()  # Pinecone 초기화/
-        create_emotion_model()  # 감성대화 Pinecone 모델 생성
+        # init_pinecone()  # Pinecone 초기화/
+        # create_emotion_model()  # 감성대화 Pinecone 모델 생성
         print("[1] 감정대화 데이터 생성 완료!")
 
     elif choice == "2":
         print("\n[2] 웰니스 데이터 생성 시작...")
         create_wellness_database()
-        create_wellness_model()  # 웰니스 Pinecone 모델 생성
+        # create_wellness_model()  # 웰니스 Pinecone 모델 생성
         print("[2] 웰니스 데이터 생성 완료!")
 
     elif choice == "3":
